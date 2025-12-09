@@ -11,6 +11,8 @@ const messageSend = async (str, avatarURL, username) => {
         content: str,
         username: username,
         avatarURL: avatarURL
+    }).then(() => {
+        return true
     })
 }
 

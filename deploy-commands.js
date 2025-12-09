@@ -20,7 +20,7 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORDBOTTOKEN);
 
 (async () => {
     const data = await rest.put(
-    Routes.applicationCommands(process.env.CLIENTID),
+    Routes.applicationGuildCommands(process.env.CLIENTID, process.env.GUILDID),
         { body: commands },
     );
 

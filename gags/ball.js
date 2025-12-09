@@ -1,6 +1,6 @@
 const garbleText = (text) => {
     let newtext = text.replace('th', 'f')
-    newtext = text.replace("TH", "F")
+    newtext = newtext.replace("TH", "F")
     return newtext
 }
 

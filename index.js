@@ -1,8 +1,22 @@
 const discord = require('discord.js')
 const dotenv = require('dotenv')
-const { messageSend } = require(`./functions/messagefunctions.js`)
+const fs = require('fs');
+const path = require('path');
+const { garbleMessage } = require(`./functions/gagfunctions.js`)
 
 dotenv.config()
+
+try {
+    process.gags = JSON.parse(fs.readFileSync(`./gaggedusers.txt`))
+}
+catch (err) { 
+    console.log(err);
+}
+
+// Grab all the command files from the commands directory
+const commands = [];
+const commandsPath = path.join(__dirname, 'commands');
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
 var gagged = {}
 
@@ -22,10 +36,31 @@ client.on("clientReady", async () => {
 
 client.on("messageCreate", async (msg) => {
     // This is called when a message is received.
-    if ((msg.channel.id != process.env.CHANNELID) || (msg.webhookId)) { return }
-    //console.log(msg.member.displayAvatarURL())
-    //console.log(msg.member.displayName)
-    messageSend(msg.content, msg.member.displayAvatarURL(), msg.member.displayName);
+    try {
+        if ((msg.channel.id != process.env.CHANNELID) || (msg.webhookId) || (msg.author.bot)) { return }
+        //console.log(msg.member.displayAvatarURL())
+        //console.log(msg.member.displayName)
+        garbleMessage(msg);
+    }
+    catch (err) {
+        console.log(err);
+    }
+})
+
+client.on('interactionCreate', async (interaction) => {
+    try {
+        if (interaction.channel.id != process.env.CHANNELID) { 
+            interaction.reply({ content: `Please use these commands over in <#${process.env.CHANNELID}>.`, flags: discord.MessageFlags.Ephemeral })
+            return;
+        }
+        if (commandFiles.includes(`${interaction.commandName}.js`)) {
+            const cmd = require(path.join(commandsPath, `${interaction.commandName}.js`))
+            cmd.execute(interaction);
+        }
+    }
+    catch (err) {
+        console.log(err);
+    }
 })
 
 client.login(process.env.DISCORDBOTTOKEN)

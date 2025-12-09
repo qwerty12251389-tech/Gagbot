@@ -137,3 +137,5 @@ dist
 
 gaggedusers.txt
 docker-compose.yml
+deploy-commands_dev.js
+index_dev.js

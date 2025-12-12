@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
-const { assignGag } = require('./../functions/gagfunctions.js')
+const { assignGag, getMitten } = require('./../functions/gagfunctions.js')
 
 // Grab all the command files from the commands directory
 const gagtypes = [];
@@ -33,7 +33,13 @@ module.exports = {
     async execute(interaction) {
 		let gaggeduser = interaction.options.getUser('user')
 		let gagtype = interaction.options.getString('gag') ? interaction.options.getString('gag') : 'ball'
-		assignGag(gaggeduser, gagtype)
+		if ((interaction.user.id != gaggeduser.id) && (getMitten(interaction.user))) {
+			interaction.reply(`${interaction.user} attempts to gag someone, but fumbles at holding the gag in their mittens!`)
+			return;
+		}
+		else {
+			assignGag(gaggeduser, gagtype)
+		}
 		let gagname = gagtypes.find(g => g.value == gagtype).name;
 		// We gagged ourselves!
 		if (interaction.user.id == gaggeduser.id) {

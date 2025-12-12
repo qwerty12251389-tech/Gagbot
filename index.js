@@ -2,6 +2,7 @@ const discord = require('discord.js')
 const dotenv = require('dotenv')
 const fs = require('fs');
 const path = require('path');
+const https = require('https');
 const { garbleMessage } = require(`./functions/gagfunctions.js`)
 
 dotenv.config()
@@ -43,7 +44,7 @@ client.on("messageCreate", async (msg) => {
         console.log(`${msg.author.bot}`)
         console.log(`${msg.stickers?.first()}`)
         console.log(`${msg.attachments?.first()}`)
-        if ((msg.channel.id != process.env.CHANNELID) || (msg.webhookId) || (msg.author.bot) || (msg.stickers?.first()) || (msg.attachments?.first())) { return }
+        if ((msg.channel.id != process.env.CHANNELID) || (msg.webhookId) || (msg.author.bot) || (msg.stickers?.first())) { return }
         //console.log(msg.member.displayAvatarURL())
         //console.log(msg.member.displayName)
         garbleMessage(msg);

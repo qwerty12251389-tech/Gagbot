@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
-const { getGag, deleteGag } = require('./../functions/gagfunctions.js')
+const { getGag, deleteGag, getMitten } = require('./../functions/gagfunctions.js')
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -13,11 +13,17 @@ module.exports = {
     async execute(interaction) {
         let gaggeduser = interaction.options.getUser('user')
         if (getGag(gaggeduser)) {
-            deleteGag(gaggeduser)
             if (interaction.user == gaggeduser) {
-                interaction.reply(`${interaction.user} has taken their gag out!`)
+                if (!getMitten(interaction.user)) {
+                    interaction.reply(`${interaction.user} has taken their gag out!`)
+                    deleteGag(gaggeduser)
+                }
+                else {
+                    interaction.reply(`${interaction.user} attempts to take their gag off, but struggles with the straps in their mittens!`)
+                }
             }
             else {
+                deleteGag(gaggeduser)
                 interaction.reply(`${interaction.user} has freed ${gaggeduser} from their gag!`)
             }
         }

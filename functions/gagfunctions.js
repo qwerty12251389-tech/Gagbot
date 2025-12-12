@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const { messageSend, messageSendDev } = require(`./../functions/messagefunctions.js`)
+const https = require('https');
+const { messageSend, messageSendImg, messageSendDev } = require(`./../functions/messagefunctions.js`)
 
 const assignGag = (userID, gagtype = "ball") => {
     if (process.gags == undefined) { process.gags = {} }
@@ -16,6 +17,22 @@ const getGag = (userID) => {
 const deleteGag = (userID) => {
     if (process.gags == undefined) { process.gags = {} }
     delete process.gags[userID]
+}
+
+const assignMitten = (userID) => {
+    if (process.mitten == undefined) { process.mitten = {} }
+    process.mitten[userID] = true
+    fs.writeFileSync(`./mittenedusers.txt`, JSON.stringify(process.mitten));
+}
+
+const getMitten = (userID) => {
+    if (process.mitten == undefined) { process.mitten = {} }
+    return process.mitten[userID]
+}
+
+const deleteMitten = (userID) => {
+    if (process.mitten == undefined) { process.mitten = {} }
+    delete process.mitten[userID]
 }
 
 const garbleMessage = async (msg) => {
@@ -36,9 +53,38 @@ const garbleMessage = async (msg) => {
                     })
                 }
                 else {
-                    let sentmessage = messageSend(garbledtext, msg.member.displayAvatarURL(), msg.member.displayName).then(() => {
-                        msg.delete();
-                    })
+                    if (msg.attachments?.first()) {
+                        console.log(msg.attachments?.first())
+                        let spoilertext = msg.attachments.first().url.search("SPOILER") ? "SPOILER_" : ""
+                        let spoiler = msg.attachments.first().url.search("SPOILER") ? true : false
+                        let nodedownload = new Promise((res,rej) => {
+                            let spoilertext = msg.attachments.first().url.search("SPOILER") ? "SPOILER_" : ""
+                            const file = fs.createWriteStream(`./${spoilertext}downloadedimage_${msg.id}.png`);
+                            https.get(msg.attachments.first().url, (response) => {
+                                response.pipe(file);
+                                file.on('finish', () => {
+                                file.close();
+                                console.log(`Downloaded to ${`./${spoilertext}downloadedimage_${msg.id}.png`}`);
+                                res(true);
+                                });
+                            }).on('error', (err) => {
+                                fs.unlink(dest); // Delete the file if an error occurs
+                                console.error(err.message);
+                                rej(false);
+                            });
+                        }).then(() => {
+                            messageSendImg(garbledtext, msg.member.displayAvatarURL(), msg.member.displayName, msg.id, spoiler).then(() => {
+                                msg.delete().then(() => {
+                                    fs.rmSync(`./${spoilertext}downloadedimage_${msg.id}.png`)
+                                });
+                            })
+                        })
+                    }
+                    else {
+                        let sentmessage = messageSend(garbledtext, msg.member.displayAvatarURL(), msg.member.displayName).then(() => {
+                            msg.delete();
+                        })
+                    }
                 }
             }
         }
@@ -51,4 +97,7 @@ const garbleMessage = async (msg) => {
 exports.assignGag = assignGag;
 exports.getGag = getGag;
 exports.deleteGag = deleteGag;
+exports.assignMitten = assignMitten;
+exports.getMitten = getMitten;
+exports.deleteMitten = deleteMitten;
 exports.garbleMessage = garbleMessage;

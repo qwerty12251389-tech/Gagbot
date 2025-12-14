@@ -4,6 +4,28 @@ const https = require('https');
 const { messageSend, messageSendImg, messageSendDev } = require(`./../functions/messagefunctions.js`)
 const { getVibe, vibeText } = require(`./../functions/vibefunctions.js`)
 
+// Grab all the command files from the commands directory
+const gagtypes = [];
+const commandsPath = path.join(__dirname, '..', 'gags');
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+
+// Push the gag name over to the choice array. 
+for (const file of commandFiles) {
+    const gag = require(`./../gags/${file}`);
+	gagtypes.push(
+        { name: gag.choicename, value: file.replace('.js', '') }
+    );
+}
+
+const convertGagText = (type) => {
+    let convertgagarr
+    for (let i = 0; i < gagtypes.length; i++) {
+        if (convertgagarr == undefined) { convertgagarr = {} }
+        convertgagarr[gagtypes[i].value] = gagtypes[i].name
+    }
+    return convertgagarr[type];
+}
+
 const assignGag = (userID, gagtype = "ball", intensity = 5) => {
     if (process.gags == undefined) { process.gags = {} }
     process.gags[userID] = {
@@ -16,6 +38,11 @@ const assignGag = (userID, gagtype = "ball", intensity = 5) => {
 const getGag = (userID) => {
     if (process.gags == undefined) { process.gags = {} }
     return process.gags[userID]?.gagtype
+}
+
+const getGagIntensity = (userID) => {
+    if (process.gags == undefined) { process.gags = {} }
+    return process.gags[userID]?.intensity
 }
 
 const deleteGag = (userID) => {
@@ -186,8 +213,10 @@ const garbleMessage = async (msg) => {
 
 exports.assignGag = assignGag;
 exports.getGag = getGag;
+exports.getGagIntensity = getGagIntensity;
 exports.deleteGag = deleteGag;
 exports.assignMitten = assignMitten;
 exports.getMitten = getMitten;
 exports.deleteMitten = deleteMitten;
 exports.garbleMessage = garbleMessage;
+exports.convertGagText = convertGagText;

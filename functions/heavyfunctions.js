@@ -11,6 +11,8 @@ const heavytypes = [
     { name: "Comfy Straitjacket", value: "straitjacket_comfy" },
     { name: "Maid Punishment Straitjacket", value: "straitjacket_maid" },
     { name: "Black Hole Boxbinder", value: "boxbinder_blackhole" },
+    { name: "Shadow Latex Petsuit", value: "petsuit_shadowlatex" },
+    { name: "Bast Petsuit", value: "petsuit_bast" },
 ];
 
 const convertheavy = (type) => {

@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const { assignMitten, getMitten } = require('./../functions/gagfunctions.js')
 const { calculateTimeout } = require("./../functions/timefunctions.js")
+const { getHeavy } = require('./../functions/heavyfunctions.js')
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -15,7 +16,10 @@ module.exports = {
             .setDescription("'Forget' a timelock - requires others to help you out")
         )*/,
     async execute(interaction) {
-		if (getMitten(interaction.user)) {
+        if (getHeavy(interaction.user.id)) {
+            interaction.reply(`${interaction.user} nuzzles a pair of mittens, but can't put them on because of their ${getHeavy(interaction.user.id).type}.`)
+        }
+		else if (getMitten(interaction.user)) {
             interaction.reply({ content: `You are already wearing mittens!`, flags: MessageFlags.Ephemeral })
         }
         else {

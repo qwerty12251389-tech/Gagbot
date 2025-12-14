@@ -141,8 +141,7 @@ const garbleMessage = async (msg) => {
             outtext = messagetexts.join(" ");
         }
         if (modifiedmessage) {
-            if (outtext.length == 0) { outtext = "Something went wrong. Ping <@125093095405518850> and let her know!"}
-            else if (outtext.length > 1999) {
+            if (outtext.length > 1999) {
                 outtext = outtext.slice(0, 1999); // Seriously, STOP POSTING LONG MESSAGES
             }
             if (msg.attachments?.first()) {
@@ -173,6 +172,7 @@ const garbleMessage = async (msg) => {
                 })
             }
             else {
+                if (outtext.length == 0) { outtext = "Something went wrong. Ping <@125093095405518850> and let her know!"}
                 let sentmessage = messageSend(outtext, msg.member.displayAvatarURL(), msg.member.displayName).then(() => {
                     msg.delete();
                 })

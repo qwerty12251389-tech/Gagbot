@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const { getChastity, getVibe, assignVibe } = require('./../functions/vibefunctions.js')
+const { getHeavy } = require('./../functions/heavyfunctions.js')
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -18,7 +19,25 @@ module.exports = {
     async execute(interaction) {
         let vibeuser = interaction.options.getUser('user') ? interaction.options.getUser('user') : interaction.user
 		let vibeintensity = interaction.options.getNumber('intensity') ? interaction.options.getNumber('intensity') : 5
-        if (getChastity(vibeuser.id)) {
+        if (getHeavy(interaction.user.id)) {
+            if (vibeuser == interaction.user) {
+                if (getChastity(vibeuser.id)) {
+                    interaction.reply(`${interaction.user} bats around a vibrator despite their ${getHeavy(interaction.user.id).type}, but they can't insert it because of their chastity belt! And well, they don't have arms!`)
+                }
+                else {
+                    interaction.reply(`${interaction.user} stares at a vibrator, longing to feel its wonderful vibrations, but sighing in frustration because they are in a ${getHeavy(interaction.user.id).type} and can't put it on!`)
+                }
+            }
+            else {
+                if (getChastity(vibeuser.id)) {
+                    interaction.reply(`${interaction.user} uses their chin to move a vibrator towards ${vibeuser} before realizing they can't put it on them because of their ${getHeavy(interaction.user.id).type} and ${vibeuser}'s chastity belt!`)
+                }
+                else {
+                    interaction.reply(`${interaction.user} rubs their cheek on the vibrator, trying to move it and put it on ${vibeuser}. It's a shame they don't have arms because of their ${getHeavy(interaction.user.id).type}!`)
+                }
+            }
+        }
+        else if (getChastity(vibeuser.id)) {
             // The target is in a chastity belt
             if ((getChastity(vibeuser.id)?.keyholder == interaction.user.id)) {
                 // User tries to modify the vibe settings for someone in chastity that they do have the key for

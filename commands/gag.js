@@ -2,6 +2,7 @@ const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 const { assignGag, getMitten } = require('./../functions/gagfunctions.js')
+const { getHeavy } = require('./../functions/heavyfunctions.js')
 
 // Grab all the command files from the commands directory
 const gagtypes = [];
@@ -63,7 +64,10 @@ module.exports = {
 				intensitytext = " as tightly as possible"
 			}
 		}
-		if (getMitten(interaction.user)) {
+		if (getHeavy(interaction.user.id)) {
+			interaction.reply(`${interaction.user} eyes a ${gagname}, but cannot put it on because of their ${getHeavy(interaction.user.id).type}!`)
+		}
+		else if (getMitten(interaction.user)) {
 			// We are wearing mittens, we can't hold onto the straps!
 			if (interaction.user.id != gaggeduser.id) {
 				interaction.reply(`${interaction.user} attempts to gag someone, but fumbles at holding the gag in their mittens!`)

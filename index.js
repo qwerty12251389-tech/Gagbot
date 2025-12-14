@@ -31,6 +31,18 @@ try {
 catch (err) { 
     console.log(err);
 }
+try {
+    process.collar = JSON.parse(fs.readFileSync(`./collarusers.txt`))
+}
+catch (err) { 
+    console.log(err);
+}
+try {
+    process.heavy = JSON.parse(fs.readFileSync(`./heavyusers.txt`))
+}
+catch (err) { 
+    console.log(err);
+}
 
 // Grab all the command files from the commands directory
 const commands = [];

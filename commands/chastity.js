@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const { getChastity, assignChastity } = require('./../functions/vibefunctions.js')
 const { calculateTimeout } = require("./../functions/timefunctions.js")
+const { getHeavy } = require('./../functions/heavyfunctions.js')
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -10,10 +11,24 @@ module.exports = {
 			opt.setName('keyholder')
 			.setDescription('Keyholder (leave blank for unlocked)')
 		),
+        /*.addUserOption(opt =>
+            opt.setName('collareduser')
+            .setDescription("User with a collar whose unlocked or you have the key to")
+        ),*/
     async execute(interaction) {
         let chastityuser = interaction.user
 		let chastitykeyholder = interaction.options.getUser('keyholder')
-        if (getChastity(interaction.user.id)?.keyholder) {
+        // Check if the wearer is in an armbinder - if they are, block them. 
+        if (getHeavy(interaction.user.id)) {
+            if (getChastity(interaction.user.id)) {
+                interaction.reply(`${interaction.user} squirms in their ${getHeavy(interaction.user.id).type}, trying to adjust their chastity belt, but it's futile!`)
+            }
+            else {
+                // User is in some form of heavy bondage and cannot put on a chastity belt
+                interaction.reply(`${interaction.user} squirms in their ${getHeavy(interaction.user.id).type}, trying to put on a chastity belt, but can't!`)
+            }
+        }
+        else if (getChastity(interaction.user.id)?.keyholder) {
             if (getChastity(interaction.user.id)?.keyholder == interaction.user.id) {
                 // User tries to lock another belt on themselves and they hqave the key
                 interaction.reply({ content: `You are already locked in a chastity belt and you're holding the key!`, flags: MessageFlags.Ephemeral })

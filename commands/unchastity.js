@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const { getChastity, removeChastity } = require('./../functions/vibefunctions.js')
 const { calculateTimeout } = require("./../functions/timefunctions.js")
+const { getHeavy } = require('./../functions/heavyfunctions.js')
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -13,7 +14,16 @@ module.exports = {
 		),
     async execute(interaction) {
 		let chastitywearer = interaction.options.getUser('wearer')
-        if (getChastity(chastitywearer.id)) {
+        if (getHeavy(interaction.user.id)) {
+            if (getChastity(interaction.user.id)) {
+                interaction.reply(`${interaction.user} shifts in their ${getHeavy(interaction.user.id).type}, trying to squirm out of their chastity belt, but their metal prison holds firmly to their body!`)
+            }
+            else {
+                // User is in some form of heavy bondage and cannot put on a chastity belt
+                interaction.reply({ content: `You're not in a chastity belt, but you wouldn't be able to remove it anyway!`, flags: MessageFlags.Ephemeral })
+            }
+        }
+        else if (getChastity(chastitywearer.id)) {
             // Target is in a belt
             if (getChastity(chastitywearer.id).keyholder != interaction.user.id) {
                 // User is NOT the keyholder for the target belt

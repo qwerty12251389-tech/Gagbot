@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const { getChastity, getVibe, removeVibe } = require('./../functions/vibefunctions.js')
+const { getHeavy } = require('./../functions/heavyfunctions.js')
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -11,7 +12,25 @@ module.exports = {
         ),
     async execute(interaction) {
         let vibeuser = interaction.options.getUser('user') ? interaction.options.getUser('user') : interaction.user
-        if (getChastity(vibeuser.id)) {
+        if (getHeavy(interaction.user.id)) {
+            if (vibeuser == interaction.user) {
+                if (getChastity(vibeuser.id)) {
+                    interaction.reply(`${interaction.user} tries to knock their vibrator off with their thighs, but can't because their arms are useless from the ${getHeavy(interaction.user.id).type}. Well, and their chastity belt of course!`)
+                }
+                else {
+                    interaction.reply(`${interaction.user}'s ${getHeavy(interaction.user.id).type} prevents them from dexterously reaching the vibrator taped to them!`)
+                }
+            }
+            else {
+                if (getChastity(vibeuser.id)) {
+                    interaction.reply(`${interaction.user} uses their nose to try to shift the vibrator off of ${vibeuser} because of their ${getHeavy(interaction.user.id).type}, but is immediately stopped by the metal shield protecting it!`)
+                }
+                else {
+                    interaction.reply(`${interaction.user} uses their nose to try to shift the vibrator off of ${vibeuser} because of their ${getHeavy(interaction.user.id).type}. The move failed!`)
+                }
+            }
+        }
+        else if (getChastity(vibeuser.id)) {
             // The target is in a chastity belt
             if ((getChastity(vibeuser.id)?.keyholder == interaction.user.id)) {
                 // User tries to modify the vibe settings for someone in chastity that they do have the key for
